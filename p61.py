@@ -24,7 +24,7 @@ for f in 5*figs:
 				# and the identifying char for the figurate hasn't yet been encoding into the tree
 				if f[1] not in fig_tree[e]:
 					branch = fig_tree[e]+f[1]+g
-					# add the branch
+					# append the branch without replacing
 					fig_tree.append(branch)
 					# if there are six branches and they're cyclical (last two are first two)
 					if len(branch) == 30 and branch[-2:]==branch[1:3]:
