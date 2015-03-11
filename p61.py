@@ -16,22 +16,23 @@ fig_tree = ["t"+t for t in tris]
 
 # appending around the list of figs five times guarantees we won't miss a combination
 for f in 5*figs:
-	# in each of the actual figurate value
+	# in each of the actual figurate values
 	for g in f[0]:
 		# get all the last branches
 		fig_branches = [x[-2:] for x in fig_tree]
 		for e,b in enumerate(fig_branches):
 			# if the last branch matches the beginning of a new one
 			if g[:2] == b:
-				# and the identifying for the figurate hasn't yet been encoding into the tree
+				# and the identifying char for the figurate hasn't yet been encoding into the tree
 				if f[1] not in fig_tree[e]:
 					branch = fig_tree[e]+f[1]+g
 					# add the branch
 					fig_tree.append(branch)
-					# if there are six branches and they're cyclical
+					# if there are six branches and they're cyclical: the end of the last is the beginning of the first
 					if len(branch) == 30 and branch[-2:]==branch[1:3]:
 						# sum the integer values
 						solution = sum([int(branch[5*i+1:5*i+5]) for i in range(0,6)])
 						# show us
 						print branch, solution
+						# eat figs
 						quit()
