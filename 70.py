@@ -1,5 +1,9 @@
 # phi(n) must be smaller than n but have the same number of digits as n, so only those permutations should be considered
-# # 
+
+# *** since phi(n) = n* product(1-1/p) for all distinct prime factors in n
+# *** n must have as few distinct prime factors as possible
+# *** and those distinct prime factors should be as high as possible (but cannot be higher than sqrt(n))
+# *** but since phi(p) = p - 1 with p prime, n cannot be prime, as no pair n and n-1 will be permutations
 
 from operator import mul
 import itertools
@@ -10,51 +14,7 @@ def sieve(n):
     for i in xrange(3,int(n**0.5)+1,2):
         if sieve[i]:
             sieve[i*i::2*i]=[False]*((n-i*i-1)/(2*i)+1)
-    return ([2] + [i for i in xrange(3,n,2) if sieve[i]],[i for i in xrange(3,n,2) if not sieve[i]])
-
-def p_factors(n):
-	global primes
-	to_test = [p for p in primes if p <= n**(0.5)]
-	# print to_test
-	p_factors = [1]
-	for t in to_test:
-		if n%t==0:
-			n /= t
-			p_factors.append(t)
-			if n==1:
-				return p_factors
-	return p_factors
-
-def phi(n):
-	global primes
-	q = 1
-	phi = n
-	prime_factors = list()
-	test = [p for p in primes if p < n and p > q]
-	# print test
-	while True:
-		if n == 1:
-			break
-		else:
-			test = [p for p in primes if p < n and p > q]
-			for t in test:
-				if n%t==0:
-					q = t
-					n /= t
-					prime_factors.append(t)
-					while True:
-						if n%t==0:
-							n/=t
-						else:
-							break
-	if len(prime_factors) > 1:
-		for p in prime_factors:
-			phi *= (1.0-1.0/float(p))
-		return int(phi)
-	else:
-		return int(phi-1)
-
-		
+    return [2] + [i for i in xrange(3,n,2) if sieve[i]]
 
 def is_perm(m,n):
 	if m == n:
@@ -72,65 +32,37 @@ def is_perm(m,n):
 		else:
 			return False
 
-# primes = e_sieve(10000000)
-# primes, comps = sieve(int(10000000**(0.5)))
-primes, comps = sieve(int(10000000**(0.5)))
+upper_bound = 10000000
 
-# construct a dict from this list of primes that makes number, totient pairs, then check their permutability
+print upper_bound**0.5
 
-totient_perms = list()
+ratio = 10.0
 
-for i in range(2,16):
-	print i, phi(i)
+solution = (1,1,1)
 
-# print phi(9)
-print phi(87109)
+primes = sieve(5000000)
 
-# # for i in range(1,100000):
-# for i in range(87109,87111):
-# 	# print "i",i
-# 	j = i
-# 	to_test = [p for p in primes if p <= i**(0.5)]
-# 	# print to_test
-# 	totient = float(i-1)
-# 	for t in to_test:
-# 		if i%t==0:
-# 			print i,t, i*(t-1)/t
-# 			i/=t
-# 			to_test = [p for p in primes if p <= i**(0.5)]
-# 			totient *= ((t-1)/t)
-# 	# totient -= 1.0
-# 	tot = phi(i)
-# 	if is_perm(i,tot):
-# 		totient_perms.append((j,tot,float(i)/tot))
-# 		print j,tot,float(i)/tot
-# print totient_perms# for i in range(1,10000000):
+phi_map = dict()
 
+for p in reversed(primes):
+	# print p
+	phi_map[p] = p-1
+	temp_phis = phi_map.keys()
+	for phi in temp_phis:
+		multiplier = p
+		print p, phi
+		while True:
+			if multiplier*phi < upper_bound:
+				phi_map[p*phi] = phi_map[p]*phi_map[phi]
+				multiplier *= p
+				if is_perm(p*phi,phi_map[p*phi]):
+					if float(p*phi)/float(phi_map[p*phi]) < ratio:
+						ratio = float(p*phi)/float(phi_map[p*phi])
+						solution = (p*phi, phi_map[p*phi], ratio)
+						print p*phi,phi_map[p*phi],ratio
+			else:
+				break
 
-# print primes
-
-# totient_factors = dict()
-
-# prime_combs = list()
-
-# # for i in range(1,len(primes)+1):
-# # 	prime_combs.append(list(itertools.combinations(primes,i)))
-
-# print prime_combs,len(prime_combs)
-# for e,p in enumerate(primes):
-# 	for i in range(0,e+1):
-
-# print primes
-
-# print p_factors(9)
-
-# print phi(9)
-
-# print is_perm('16790','07619')
-# for n in comps:
-# 	p = phi(n)
-# 	if is_perm(n,int(p)):
-# 		print n, p, n/p
-
-# for p in primes:
-# 	facto
+print len(phi_map.keys())
+# print phi_map
+print solution
