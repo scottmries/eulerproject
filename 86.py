@@ -6,7 +6,10 @@
 
 # given the winning length, 
 # if its corresponding sides are two of a Pythagorean triple,
+# (how to determine this?)
 # it is a solution
 
-# a recursive structure could be used to generate the cubes smaller than MxMxM
-# from those those smaller than M-1xM-1xM-1
+# a recursive structure could be used to generate the cubes 
+# smaller than MxMxM
+# but not smaller than M-1xM-1xM-1
+# the solutions in this logical supplement can then simply be added to those found previously, etc.
