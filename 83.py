@@ -73,20 +73,14 @@ while True:
     least_square = None
     least_value = None
     least_square_index = None
-    print('end squares')
     for square_index in range(len(endSquares)):
-        print(endSquares[square_index].coordinates)
         square = endSquares[square_index]
         if least_value is None or square.end_value < least_value:
             least_value = square.end_value
             least_square = square
             least_square_index = square_index
-    print("least square")
     print("%s: %s" %(least_square.coordinates, least_square.end_value))
     least_square.end_neighbors()
-    print("least square neighbors")
-    for neighbor in least_square.neighbors:
-        print(neighbor.coordinates)
     endSquares += least_square.neighbors
     del endSquares[least_square_index]
     if top_left in least_square.neighbors:
